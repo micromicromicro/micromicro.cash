@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block body %}
+<div>
+	<span class="brand">micromicro</span> is a service that makes sending and receiving small amounts of money easy. Read more <a href="/help/what_are_microtransactions.html?{{bust}}">here...</a>
+</div>
+<div id="updates">
+	<h1>Updates</h1>
+	{% for update in recent %}<a class="shortupdate" href="{{update.path}}?{{bust}}">
+		<span class="date">{{update.date.date().isoformat()}}</span>
+		<h2>{{update.title}}</h2>
+		{% autoescape false %}{{update.body}}{% endautoescape %}
+	</a>{% endfor %}
+</div>
+<div id="prices"></div>
+{% endblock %}
+{% block scripts %}
+<script src="index.js?{{bust}}" module></script>
+{% endblock %}

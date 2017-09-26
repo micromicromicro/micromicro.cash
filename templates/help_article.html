@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{{title}}{% endblock %}
+{% block body %}
+<a href="/help.html">◅ Back</a>
+<br>
+<h1>{{title}}</h1>
+{% autoescape false %}<div class="articlebody">{{body}}</div>{% endautoescape %}
+<br>
+<a href="/help.html">◅ Back</a>
+{% endblock %}

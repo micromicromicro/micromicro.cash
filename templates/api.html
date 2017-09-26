@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}API - Endpoint Documentation - {{page}}{% endblock %}
+{% block head %}
+<div class="toc">
+{% for endpoint in endpoints %}
+	<a href="#{{endpoint.path}}">{{endpoint.path}}</a>
+{% endfor %}
+</div>
+{% endblock %}
+{% block body %}
+<h1>API - Documentation</h1>
+<p>This API is also used by the webapp, so refer to that if parts of this document are unclear.</p>
+<p>All request paths are based on the prefix <span class="endpointprefix"></span>.  Request fields should be passed as query parameters for <code>GET</code> requests and JSON form bodies for <code>POST</code> requests.</p>
+<p>All requests may also return an error response.  The error response has a field <code>error</code> which contains two fields, <code>code</code> and <code>message</code>.  <code>code</code> is a numeric error code, and <code>message</code> is a description of the error.</p>
+<div><span class="valid">opt</span>Field is optional.</div>
+<div><span class="valid">null</span>Field may be null.</div>
+<div><span class="valid">[X,Y)</span>Field value or size must be at least X, less than Y.</div>
+{% for endpoint in endpoints %}
+	<a name="{{endpoint.path}}"></a><h2>{{endpoint.path}}</h2>
+	<div class="apibody">
+		{% if endpoint.ws %}<h5>Websockets</h5>{% endif %}
+		<div>{{endpoint.description | render}}</div>
+		<table>
+			{% for field in endpoint.fields %}
+			<tr>
+				<td>{{field.name}}</td>
+				<td>
+					{% if field.optional %}<span class="valid">opt</span>{% endif %}
+					{% if field.nullable %}<span class="valid">null</span>{% endif %}
+					{% if field.range %}<span class="valid">{{field.range}}</span>{% endif %}
+					<div>{{field.description | render}}</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% for response in endpoint.responses %}
+			<div class="response">
+				<h3>Response</h3>
+				{% if response.type == 'inner' %}<h5>Inner response</h5>{% endif %}
+				<div>{{response.description | render}}</div>
+				<table>
+					{% for field in response.fields %}
+					<tr>
+						<td>{{field.name}}</td>
+						<td>
+							{% if field.optional %}<span class="valid">opt</span>{% endif %}
+							{% if field.nullable %}<span class="valid">null</span>{% endif %}
+							{% if field.range %}<span class="valid">{{field.range}}</span>{% endif %}
+							<div>{{field.description | render}}</div>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+			</div>
+		{% endfor %}
+	</div>
+{% endfor %}
+{% endblock %}
+{% block scripts %}
+<script src="api.js" module></script>
+{% endblock %}

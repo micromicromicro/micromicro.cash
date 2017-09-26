@@ -1,0 +1,4 @@
+Jinja2==2.10
+markdown2==2.3.5
+w3lib==1.18.0
+dateparser==0.6.0

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>{% block title %}{% endblock %} - micromicro</title>
+		<link href="/general.css?{{bust}}" rel="stylesheet">
+	</head>
+	<body>
+		<div class="outer">
+			<div class="title">
+				<div class="subtitle">
+					<img src="/title.svg" alt="micromicro">
+					<div class="staticpages">
+						<a href="/app/index.html" target="_blank"><div>Start</div></a>
+						<a href="/index.html" {% if template == 'index.html' %}class="selected"{% endif %}><div>Home</div></a>
+						<a href="/help.html" {% if template.startswith('help') %}class="selected"{% endif %}><div>Help</div></a>
+						<a href="https://www.reddit.com/r/micromicro"><div>Talk</div></a>
+					</div>
+				</div>
+				{% block head %}
+				{% endblock %}
+			</div>
+			<div class="body {{template[:-5]}}">
+				{% block body %}
+				{% endblock %}
+			</div>
+			<div class="foot">
+				<div class="staticpages">
+					<a href="/app/index.html" target="_blank">Start</a>
+					<a href="/index.html">Home</a>
+					<a href="/help.html">Help</a>
+					<a href="/updates.html">News</a>
+					<!--<a href="">Finance</a>-->
+					<a href="https://www.reddit.com/r/micromicro">Talk</a>
+					<a href="/tos.html">Terms of Service</a>
+					<a href="/api.html">API</a>
+				</div>
+				<p class="copyright">&copy; 2018 <span class="brand">micromicro</span></p>
+			</div>
+		</div>
+	</body>
+	{% block scripts %}{% endblock %}
+</html>

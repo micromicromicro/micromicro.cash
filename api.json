@@ -1,0 +1,1255 @@
+[ {
+  "path" : "/account",
+  "ws" : false,
+  "description" : "Get information about your account.  You must specify either `password` or `token`.",
+  "fields" : [ {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "password",
+    "description" : "Your account password.",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : true
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : "The internal id of the account."
+    }, {
+      "name" : "username",
+      "description" : "Your account username."
+    }, {
+      "name" : "token",
+      "description" : "The login token returned from `/account` or `/new_account`."
+    }, {
+      "name" : "balance",
+      "description" : "The current account balance.    Note that money received with the `slow` flag may not be reflected in the balance yet."
+    }, {
+      "name" : "webhook",
+      "description" : "The details of any transaction relating to this account will be POSTed to this url (formatted as in `/transaction`)."
+    } ]
+  } ]
+}, {
+  "path" : "/change_account",
+  "ws" : false,
+  "description" : "Modify account details.",
+  "fields" : [ {
+    "name" : "webhook",
+    "description" : "The webhook url.",
+    "nullable" : true,
+    "optional" : false
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ ]
+}, {
+  "path" : "/delete_in",
+  "ws" : false,
+  "description" : "Delete an `in`.",
+  "fields" : [ {
+    "name" : "id",
+    "description" : "The id of the `in`.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ ]
+}, {
+  "path" : "/delete_out",
+  "ws" : false,
+  "description" : "Delete an `out`.",
+  "fields" : [ {
+    "name" : "id",
+    "description" : "The id of the `out`.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ ]
+}, {
+  "path" : "/deposit",
+  "ws" : false,
+  "description" : "Get an address to deposit money in an account from an external source.",
+  "fields" : [ {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "address",
+      "description" : "The litecoin address to send money to."
+    } ]
+  } ]
+}, {
+  "path" : "/deposits",
+  "ws" : false,
+  "description" : "List deposits",
+  "fields" : [ {
+    "name" : "start_edge",
+    "description" : "Show the next deposits after this id",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "end_edge",
+    "description" : "Show the next deposits before this id",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "stamp",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "count",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 1000)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "responses",
+      "description" : "An array of the inner response object."
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "account",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "address",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/in",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "id",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "receiver_message",
+      "description" : ""
+    }, {
+      "name" : "slow",
+      "description" : ""
+    } ]
+  }, {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "slow",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/ins",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "start_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "end_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "count",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 200)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "responses",
+      "description" : "An array of the inner response object."
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : "A suggested transaction description for the sender."
+    }, {
+      "name" : "receiver_message",
+      "description" : "Transaction description for the receiver. Only visible to the receiver."
+    }, {
+      "name" : "slow",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/new_account",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "password",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 256)"
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "username",
+      "description" : "Your account username."
+    }, {
+      "name" : "token",
+      "description" : "The login token returned from `/account` or `/new_account`."
+    }, {
+      "name" : "balance",
+      "description" : ""
+    }, {
+      "name" : "webhook",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/new_in",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "slow",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "single_use",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "expire",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1"
+  }, {
+    "name" : "amount",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1"
+  }, {
+    "name" : "receiver_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "sender_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : "A suggested transaction description for the sender."
+    }, {
+      "name" : "receiver_message",
+      "description" : "Transaction description for the receiver. Only visible to the receiver."
+    }, {
+      "name" : "slow",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/new_out",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "amount",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1"
+  }, {
+    "name" : "expire",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "receiver_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "sender_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "out_password",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "receiver_message",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/out",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "id",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "receiver_message",
+      "description" : ""
+    } ]
+  }, {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "receiver_message",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/outs",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "start_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "end_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "count",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 200)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "responses",
+      "description" : "An array of the inner response object."
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "expire",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "receiver_message",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/prices",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "prices",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/public_key",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "public_key",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/rates",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "usd",
+      "description" : ""
+    }, {
+      "name" : "eur",
+      "description" : ""
+    }, {
+      "name" : "jpy",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/receive",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "source",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "slow",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "receiver_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "source_password",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "accounting",
+      "description" : ""
+    }, {
+      "name" : "message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/send",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "dest",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[8, 8]"
+  }, {
+    "name" : "amount",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1"
+  }, {
+    "name" : "sender_message",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "1024]"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/set_password",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "new_password",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 256)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "username",
+      "description" : "Your account username."
+    }, {
+      "name" : "token",
+      "description" : "The login token returned from `/account` or `/new_account`."
+    }, {
+      "name" : "balance",
+      "description" : ""
+    }, {
+      "name" : "webhook",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/tos",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/transaction",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "id",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  }, {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "accounting",
+      "description" : ""
+    }, {
+      "name" : "message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/transactions",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "start_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "end_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "stamp",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "count",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 1000)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "responses",
+      "description" : "An array of the inner response object."
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "source",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "sender_message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "dest",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    }, {
+      "name" : "accounting",
+      "description" : ""
+    }, {
+      "name" : "message",
+      "description" : ""
+    }, {
+      "name" : "signature_type",
+      "description" : ""
+    }, {
+      "name" : "sender_signature",
+      "description" : ""
+    }, {
+      "name" : "receiver_signature",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/withdraw",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "address",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "amount",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "account",
+      "description" : ""
+    }, {
+      "name" : "address",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    } ]
+  } ]
+}, {
+  "path" : "/withdrawals",
+  "ws" : false,
+  "description" : "",
+  "fields" : [ {
+    "name" : "start_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "end_edge",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "stamp",
+    "description" : "",
+    "nullable" : false,
+    "optional" : true
+  }, {
+    "name" : "count",
+    "description" : "",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 1000)"
+  }, {
+    "name" : "tos",
+    "description" : "The id of the latest Terms of Service you have agreed to. The request will fail if this is not the latest terms of service.",
+    "nullable" : false,
+    "optional" : false
+  }, {
+    "name" : "username",
+    "description" : "Your account username.",
+    "nullable" : false,
+    "optional" : false,
+    "range" : "[1, 128)"
+  }, {
+    "name" : "token",
+    "description" : "The login token returned from `/account` or `/new_account`.",
+    "nullable" : false,
+    "optional" : false
+  } ],
+  "responses" : [ {
+    "type" : "outer",
+    "description" : "",
+    "fields" : [ {
+      "name" : "responses",
+      "description" : "An array of the inner response object."
+    } ]
+  }, {
+    "type" : "inner",
+    "description" : "",
+    "fields" : [ {
+      "name" : "account",
+      "description" : ""
+    }, {
+      "name" : "address",
+      "description" : ""
+    }, {
+      "name" : "id",
+      "description" : ""
+    }, {
+      "name" : "amount",
+      "description" : ""
+    }, {
+      "name" : "stamp",
+      "description" : ""
+    } ]
+  } ]
+} ]

@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}{{update.title}} - {{page}}{% endblock %}
+{% block body %}
+<h1>{{update.title}}</h1>
+<div class="date">{{update.date.date().isoformat()}}</div>
+{% autoescape false %}<div class="updatebody">{{update.body}}</div>{% endautoescape %}
+{% endblock %}

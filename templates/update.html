@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Recent - Page {{page}}{% endblock %}
+{% block body %}
+<h1>Recent - {{page}}</h1>
+{% for update in updates %}
+<div class="update">
+	<div class="date">{{update.date.date().isoformat()}}</div>
+	<a href="{{update.path}}?{{bust}}"><h2>{{update.title}}</h2></a>
+	{% autoescape false %}
+	<div class="updatebody">{{update.body}}</div>
+	{% endautoescape %}
+</div>
+{% endfor %}
+{% endblock %}

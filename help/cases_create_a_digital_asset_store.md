@@ -6,7 +6,7 @@ Here's a guide to setting up your own store AWS.  Azure and Google Cloud have si
 
 ### Overview
 
-The store will be fairly simple, with four components:
+The infrastructure is fairly simple, with four components:
 
 * An Amazon S3 bucket will store the digital assets
 * A second bucket will host the webpage itself
@@ -19,7 +19,9 @@ Before we start you'll need to prepare several things:
 
 1. An email account for sending download links. You can probably try this with a personal email account, but if you expect lots of purchases daily you may wish to set up Amazon SES or something similar.
 
-1. A [_development_ micromicro](https://development.micromicro.cash) account with a small balance to cover account maintenance and address creation.  On `development.micromicro.cash` you can test purchases with testnet Litecoin instead of real money.  You can use the production (real Litecoin) micromicro server by removing `development.` from all micromicro URLs.
+1. A [_development_ micromicro](https://development.micromicro.cash) account with a small balance to cover account maintenance and address creation.
+
+    On `development.micromicro.cash` you can test purchases with testnet Litecoin instead of real money.  To switch to the production (real Litecoin) micromicro server, make an account on [the production server](https://micromicro.cash) and remove `development.` from all micromicro URLs in the code.
 
 ### 1. Prepare the source code
 
@@ -226,7 +228,9 @@ This Lambda function will be used as a webhook (a machine-used URL) that's calle
 
 ### 5. Trying it all out
 
-Open your website again and try purchasing something.  You might need to make another micromicro account and transfer some money to it to make the payment.  A few seconds after you've paid you should get an email with the download link.
+Open your website again and try purchasing something.
+
+You might need to make another micromicro account and transfer some money to it to make the payment.  A few seconds after you've paid you should get an email with the download link.
 
 ![Showing a payment address on the website](case_asset_store_payment_address.jpg)
 

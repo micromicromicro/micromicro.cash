@@ -246,7 +246,7 @@ const e_logo = () => {
 
 const e_errors = () => {
 	return {
-		dom: [lc.div({id: 'errors'})],
+		dom: [lc.div({id: 'errors'}), lc.div({id: 'messages'})],
 	}
 }
 
@@ -1685,6 +1685,49 @@ authRoute(/^settings$/, (_) => {
 	const passwordConfirm = e_formPass({
 		text: 'Confirm Pass',
 	})
+	const submits = []
+	if (!uon(config.account.webhook))
+		submits.push(e_button('test_webhook', 'Test Webhook', async () => {
+			await myPost(basePath + 'test_webhook', {
+				tos: config.tos,
+				username: config.username,
+				token: config.token,
+			})
+			mount('messages', {dom: [document.createTextNode('Webhook success')]})
+			window.scrollTo(0, 0)
+		}))
+	submits.push(e_button('save', 'Save', async () => {
+		setConfig({currency: currency.value})
+		if (webhook.value !== config.account.webhook) {
+			await myPost(basePath + 'change_account', {
+				tos: config.tos,
+				username: config.username,
+				token: config.token,
+				webhook: webhook.value,
+			})
+			const account = config.account
+			account.webhook = webhook.value
+			setConfig({
+				account: account,
+			})
+			go('')
+		}
+		if (!uon(password.value) && password.value !== '') {
+			if (password.value != passwordConfirm.value)
+				throw new Error('Passwords don\'t match')
+			const resp = await myPost(basePath + 'set_password', {
+				tos: config.tos,
+				username: config.username,
+				token: config.token,
+				new_password: password.value,
+			})
+			setConfig({
+				account: resp,
+				token: resp.token,
+			})
+		}
+		go('')
+	}))
 	mountRoot(e_authbody({back: true, elements: [
 		e_body(
 			e_subform(
@@ -1700,40 +1743,7 @@ authRoute(/^settings$/, (_) => {
 			{dom: [lc.a({href: 'https://www.reddit.com/r/micromicro'}, 'Get help')]},
 		),
 		e_foot(
-			e_submits(
-				e_button('save', 'Save', async () => {
-					setConfig({currency: currency.value})
-					if (webhook.value !== config.account.webhook) {
-						await myPost(basePath + 'change_account', {
-							tos: config.tos,
-							username: config.username,
-							token: config.token,
-							webhook: webhook.value,
-						})
-						const account = config.account
-						account.webhook = webhook.value
-						setConfig({
-							account: account,
-						})
-						go('')
-					}
-					if (!uon(password.value) && password.value !== '') {
-						if (password.value != passwordConfirm.value)
-							throw new Error('Passwords don\'t match')
-						const resp = await myPost(basePath + 'set_password', {
-							tos: config.tos,
-							username: config.username,
-							token: config.token,
-							new_password: password.value,
-						})
-						setConfig({
-							account: resp,
-							token: resp.token,
-						})
-					}
-					go('')
-				})
-			),
+			e_submits(...submits),
 		),
 	]}))
 })

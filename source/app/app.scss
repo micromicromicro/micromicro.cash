@@ -454,12 +454,15 @@ span.amount div.price {
 	display: inline;
 }
 
-div#errors {
-	color: $bad;
+div#errors, div#messages {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	text-align: center;
 
+}
+
+div#errors {
+	color: $bad;
 }
 
 div#errors:not(:empty)::before {
@@ -467,6 +470,10 @@ div#errors:not(:empty)::before {
 	display: inline-block;
 	text-align: center;
 	width: 1em;
+}
+
+div#messages {
+	color: $good;
 }
 
 div.submits {

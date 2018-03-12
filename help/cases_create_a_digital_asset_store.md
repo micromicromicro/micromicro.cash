@@ -1,8 +1,8 @@
 <!-- Create a Digital Asset Store -->
 
-One thing micromicro makes easy is creating a low-overhead store for digital assets like music or video.  The process is somewhat involved but you have complete flexibility with the end result.
+One thing micromicro makes easy is creating a low-overhead store for digital assets like music or video.
 
-This guide shows how to set up your store with AWS, but Azure and Google Cloud have similar tools you should be able to use as well, and failing that everything here can also be done easily with PHP webhost.
+Here's a guide to setting up your own store AWS.  Azure and Google Cloud have similar tools you should be able to use as well, and failing that everything here can also be done easily with a standard PHP webhost.
 
 ### Overview
 
@@ -29,9 +29,9 @@ You'll need `7z`, `node` and `npm` installed to assemble the pieces.
 
 1. Run `git clone https://github.com/micromicromicro/example-asset-store` and enter the repository directory
 
-1. Run `npm install` to download all the Javascript dependencies
+1. In `html/` run `npm install` to download all the Javascript dependencies
 
-1. Run `./build.sh` to package all the functions and Javascript.
+1. Back in the repository root directory run `./build.sh` to package all the functions and Javascript.
 
 ### 2. Upload the assets
 
@@ -83,9 +83,9 @@ We'll use AWS Lambda for this.  Lambda is a service that will run a program for 
 
 1. Under "Function code" select "Upload a .ZIP file" for the "Code entry type".  Click "Upload" and select the `create_address.zip` file that `build.sh` produced.  Change the "Handler" to `create_address.handler`.
 
-    If you change the code, you can run `build.sh` and select "Upload a .ZIP file" to upload the new code at any time.
-
     ![Function code settings](case_asset_store_function_code_settings.jpg)
+
+    If you change the code at any time, you can run `build.sh` and select "Upload a .ZIP file" to upload the new code.
 
 1. Add the following key value pairs in "Environment variables":
 
@@ -101,7 +101,7 @@ The function's done!
 
 ##### Testing the function
 
-You can test it out now:
+Scroll back up to the top of the function page if you aren't currently.
 
 1. In the dropdown next to the "Test" button select "Configure test events".
 
@@ -141,7 +141,7 @@ The Javascript calls the Lambda function we created in the second step to create
 
 ##### Modifying the source code
 
-1. Click the "Services" dropdown and select "API Gateway" under "Networking & Content Delivery".  Click "my_asset_store_api".
+1. Click the "Services" dropdown and select "API Gateway" under "Networking & Content Delivery".  Click `my_asset_store_api`.
 
     ![API Gateway screen](case_asset_store_api_gateway_screen.jpg)
 
@@ -149,9 +149,9 @@ The Javascript calls the Lambda function we created in the second step to create
 
 1. Copy the "Invoke URL".
 
-1. Edit `html/index.js` and replace the text that says `CREATE ADDRESS URL` with the URL we just copied.
+1. Edit `html/source/index.js` in the repository and replace the text that says `CREATE ADDRESS URL` with the URL we just copied.
 
-1. Run `build.sh` in the repository root directory again to update all the files.  This bundles the javascript and puts everything for the website in the `html/build/` directory.
+1. Run `build.sh` again to update all the files.  This bundles the javascript and puts everything for the website in the `html/build/` directory.
 
 ##### Publishing the website
 
@@ -179,17 +179,21 @@ The Javascript calls the Lambda function we created in the second step to create
 
 ### 4. Create a Lambda function to send download links
 
+Now we need to create a Lambda function to create the download link for the specified content and send them to customers via email.
+
 This Lambda function will be used as a webhook (a machine-used URL) that's called by micromicro when a payment is made.  micromicro will send transaction details to the webhook including the message we attached to the address when it was created - the asset id and the customer email address.
 
-The function creates the download link for the specified content and sends it in an email to the customer.
+1. The steps to create this function are fairly similar to those for the `create_address` function.  You can reuse the api gateway and `api` stage we created before.  Replace `create_address` with `send_email` everywhere.
 
-1. The steps are fairly similar to those for the `create_address` function.  You can reuse the api gateway and `api` stage we created before.  Replace `create_address` with `send_email` everywhere.
-
-    Create a role with name `send_email_role` and the "S3 object read-only permissions" policy template.
+    Create a role with name `send_email_role` and the "S3 object read-only permissions" policy template instead of "Basic Edge Lambda permissions".
 
     Configure these environment variables:
 
-    * `SEND_EMAIL`: The email address that will send links to customers.  This is also used to log into the mail server, so if you use a separate name to log in you'll have to modify the code.
+    * `SEND_BUCKET`: The name of the bucket containing your assets (`mmex-my-assets` in the example).
+
+    * `SEND_TOKEN`: To prevent people from accessing downloads by sending fake data to the webhook we'll create a secret token to include in the request.  Come up with 40 or so random numbers and letters and put them in the "Value" text box.  You can use [random.org](https://random.org/passwords/?num=5&len=20&format=html&rnd=new) or another random data generator of your choice.
+
+    * `SEND_EMAIL`: The email address that will send links to customers.
     
     * `SEND_EMAIL_SERVER`: The (SMTP) mail server.
 
@@ -200,8 +204,6 @@ The function creates the download link for the specified content and sends it in
     * `SEND_EMAIL_USERNAME`: The username to log into the mail server.  This may be the same as `SEND_EMAIL`.
 
     * `SEND_EMAIL_PASSWORD`: The password for the email address.
-
-    * `SEND_TOKEN`: To prevent people from accessing downloads by sending fake data to the webhook we'll create a secret token to include in the request.  Come up with 40 or so random numbers and letters and put them in the "Value" text box.  You can use [random.org](random.org/passwords/?num=5&len=20&format=html&rnd=new) or another random data generator of your choice.
 
 1. You can test the function with this payload:
 

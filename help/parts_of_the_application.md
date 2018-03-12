@@ -48,9 +48,9 @@ micromicro forms have a number of unique features.
 
 1. <img alt="The plus" class="inline" src="/app/plus.svg">: This line in the form is optional.  Press the <img alt="plus button" class="inline" src="/app/plus.svg"> to select it.
 
-2. <img alt="The minus" class="inline" src="/app/minus.svg">: This line in the form is optional and selected by default.  Press the <img alt="minus button" class="inline" src="/app/minus.svg"> to deselect it.
+2. <img alt="The minus" class="inline" src="/app/minus.svg">: This line in the form is optional and is currently selected.  Press the <img alt="minus button" class="inline" src="/app/minus.svg"> to deselect it.
 
-3. <img alt="The question mark" class="inline" src="/app/minus.svg">: Click on this button to toggle explanations for the lines in the form.
+3. <img alt="The question mark" class="inline" src="/app/help.svg">: Click on this button to toggle explanations for the lines in the form.
 
 <br>
 <br>

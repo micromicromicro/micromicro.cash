@@ -72,6 +72,10 @@ ul {
 		p:first-of-type {
 			display: inline-block;
 		}
+
+		& > *:first-child {
+			margin-top: 0;
+		}
 	}
 
 	li::before {
@@ -83,7 +87,6 @@ ul {
 		font-size: 1.3em;
 		color: $sub_purple;
 		vertical-align: top;
-		margin-top: 0.3em;
 	}
 }
 

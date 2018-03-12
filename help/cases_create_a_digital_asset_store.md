@@ -35,9 +35,13 @@ You'll need `7z`, `node` and `npm` installed to assemble the pieces.
 
 ### 2. Upload the assets
 
-We'll store the files to download in Amazon's S3 storage service.  The files will be private, but when someone purchases an asset we'll create a special link that allows the clicker to download the file for a period of time.
+We'll store the assets in Amazon's S3 storage service.  The files will be private, but when someone purchases one we'll create a special link that allows the clicker to download it for a period of time.
 
 1. Log into the AWS console website, click on the "Services" dropdown and select "S3" under "Storage".
+
+![Services dropdown](case_asset_store_services_dropdown.jpg)
+
+![S3 link](case_asset_store_s3_link.jpg)
 
 1. Click "Create Bucket" and enter a name for your asset bucket.  We'll use `mmex-my-assets`.  The default settings are okay, so press "Create" in the bottom left.
 
@@ -45,13 +49,13 @@ We'll store the files to download in Amazon's S3 storage service.  The files wil
 
 The bucket should look like this when done:
 
-![Completed asset bucket](cases_asset_store_asset_bucket.jpg)
+![Completed asset bucket](case_asset_store_asset_bucket.jpg)
 
 ### 3. Create a Lambda function to generate payment addresses
 
-When someone shows interest in an asset we create a payment address they can use to purchase it.  The provided website code makes a call to an API to create the address, but since we haven't set up the API yet it uses a placeholder API URL.  So first we need to make the API.
+When someone wants to buy an asset we create a payment address they can use to purchase it.  The provided website code makes a call to an API to create the address, so first we need to make that API.
 
-We'll use AWS Lambda for this purpose.  Lambda is a service that will run a program for you when a URL is accessed, and you're only charged when it runs (and only for a small amount, and only after the first N free requests per month).
+We'll use AWS Lambda for this.  Lambda is a service that will run a program for you when a URL is accessed, and you're only charged when it runs (and only for a small amount, and only after the first N free requests per month).
 
 1. Click the "Services" dropdown again and select "Lambda" under "Compute".
 
@@ -59,7 +63,7 @@ We'll use AWS Lambda for this purpose.  Lambda is a service that will run a prog
 
 1. Enter `create_address` for the "Name"
 
-    ![Function initial settings](cases_asset_store_function_initial_settings.jpg)
+    ![Function initial settings](case_asset_store_function_initial_settings.jpg)
 
 1. Select "Python 3.6" for the "Runtime"
 
@@ -71,7 +75,7 @@ We'll use AWS Lambda for this purpose.  Lambda is a service that will run a prog
 
 1. In the "Designer" box under "Add triggers" click "API Gateway".  API Gateway is the mechanism for triggering the Lambda function when a HTTP request is made.
 
-    ![Function trigger settings](cases_asset_store_function_trigger_settings.jpg)
+    ![Function trigger settings](case_asset_store_function_trigger_settings.jpg)
 
 1. Select "Create a new API" with "API Name" `my_asset_store_api`, "Deployment stage" `api`, and "Security" "Open".  Press "Add".
 
@@ -81,7 +85,7 @@ We'll use AWS Lambda for this purpose.  Lambda is a service that will run a prog
 
     If you change the code, you can run `build.sh` and select "Upload a .ZIP file" to upload the new code at any time.
 
-    ![Function code settings](cases_asset_store_function_code_settings.jpg)
+    ![Function code settings](case_asset_store_function_code_settings.jpg)
 
 1. Add the following key value pairs in "Environment variables":
 
@@ -133,13 +137,13 @@ If there was an error, you can view logs by:
 
 The website design is simple.  When a user clicks on an asset to purchase, they are prompted for their email if they haven't provided one yet and then a payment address is displayed.
 
-We use the Lambda function we created in the second step to create the payment address, so we need to update the Javascript to use that URL.
+The Javascript calls the Lambda function we created in the second step to create the payment address, so first we need to update it with the Lambda URL.
 
 ##### Modifying the source code
 
 1. Click the "Services" dropdown and select "API Gateway" under "Networking & Content Delivery".  Click "my_asset_store_api".
 
-    ![API Gateway screen](cases_asset_store_api_gateway_screen.jpg)
+    ![API Gateway screen](case_asset_store_api_gateway_screen.jpg)
 
 1. Click "Stages" in the left tree, expand the `api` stage, and click the `POST` resource under `/create_address`.
 
@@ -159,7 +163,7 @@ We use the Lambda function we created in the second step to create the payment a
 
 1. Select "Grant public read access to this bucket" under "Manage public permissions" on the permissions page.  Press "Next".
 
-    ![Bucket public access](cases_asset_store_s3_public_access.jpg)
+    ![Bucket public access](case_asset_store_s3_public_access.jpg)
 
 1. Press "Create bucket"
 
@@ -167,11 +171,11 @@ We use the Lambda function we created in the second step to create the payment a
 
 1. On the bucket page, click on the "Properties" tab at the top.  Click "Static website hosting", select "Use this bucket to host a website" and enter "index.html" in the "Index document" text box.  Press "Save".
 
-    ![Static website hosting settings](cases_asset_store_s3_hosting_settings.jpg)
+    ![Static website hosting settings](case_asset_store_s3_hosting_settings.jpg)
 
 1. Go back to the "Overview" tab.  Click on `index.html`.  Visit the "Link" at the bottom - if you can view the website you've done everything correctly!
 
-![Finished website](cases_asset_store_uploaded_website.jpg)
+![Finished website](case_asset_store_uploaded_website.jpg)
 
 ### 4. Create a Lambda function to send download links
 
@@ -204,7 +208,7 @@ The function creates the download link for the specified content and sends it in
     ```
     {
       "queryStringParameters": {"t": "YOURTOKEN"},
-      "body": "{\"message\": \"{\\\"name\\\": \\\"testing product name\\\", \\\"email\\\": \\\"YOUREMAIL@HOST.com\\\", \\\"id\\\": \\\"asset1.txt\\\"}\"}"
+      "body": "{\"message\": \"{\\\"name\\\": \\\"testing product name\\\", \\\"email\\\": \\\"YOUREMAIL@HOST.com\\\", \\\"id\\\": \\\"asset2.txt\\\"}\"}"
     }
     ```
 
@@ -222,7 +226,7 @@ The function creates the download link for the specified content and sends it in
 
 Open your website again and try purchasing something.  You might need to make another micromicro account and transfer some money to it to make the payment.  A few seconds after you've paid you should get an email with the download link.
 
-![Showing a payment address on the website](cases_asset_store_payment_address.jpg)
+![Showing a payment address on the website](case_asset_store_payment_address.jpg)
 
 If something breaks, double check the previous steps and follow the debugging instructions there.  If you've made extra changes on your own, try reverting them and re adding them one at a time until you identify what caused it to fail.
 

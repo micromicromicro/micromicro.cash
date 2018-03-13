@@ -1,8 +1,10 @@
 <!-- Create a Digital Asset Store -->
 
-One thing micromicro makes easy is creating a low-overhead store for digital assets like music or video.
+One thing micromicro makes easy is creating a low-overhead store for digital assets like music or video.  Here's a guide short to setting up your own working store in AWS!
 
-Here's a guide to setting up your own store AWS.  Azure and Google Cloud have similar tools you should be able to use as well, and failing that everything here can also be done easily with a standard PHP webhost.
+Azure and Google Cloud have similar tools you should be able to use as well, and failing that everything here can also be done easily with a standard PHP webhost.
+
+Note: For this guide we use the production servers, but if you'd like to try your idea on development servers that use testnet Litecoin, replace `micromicro.cash` with `development.micromicro.cash` everywhere (in the code as well) and create your account on [development.micromicro.cash](https://development.micromicro.cash).
 
 ### Overview
 
@@ -19,9 +21,9 @@ Before we start you'll need to prepare several things:
 
 1. An email account for sending download links. You can probably try this with a personal email account, but if you expect lots of purchases daily you may wish to set up Amazon SES or something similar.
 
-1. A [_development_ micromicro](https://development.micromicro.cash) account with a small balance to cover account maintenance and address creation.
+1. A [_development_ micromicro](https://micromicro.cash) account with a small balance to cover account maintenance and address creation.
 
-    On `development.micromicro.cash` you can test purchases with testnet Litecoin instead of real money.  To switch to the production (real Litecoin) micromicro server, make an account on [the production server](https://micromicro.cash) and remove `development.` from all micromicro URLs in the code.
+    On `micromicro.cash` you can test purchases with testnet Litecoin instead of real money.  To switch to the production (real Litecoin) micromicro server, make an account on [the production server](https://micromicro.cash) and remove `` from all micromicro URLs in the code.
 
 ### 1. Prepare the source code
 

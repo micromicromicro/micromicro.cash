@@ -4,9 +4,7 @@ There are two ways to receive money within micromicro:
 
 ### Create an `in` address
 
-1. Press `New (In)` and fill out the form
-
-    Press the question mark to see an explanation of each form field.
+1. Press `New (In)` and fill out the form. Press the question mark to see an explanation of each form field.
 
 2. Press `Receive`
 

@@ -14,7 +14,7 @@ Copy the text below the QR code, this is the deposit address and will be require
 
 ### 2. Deposit Litecoin
 
-In your Litecoin wallet or on the website of the service you used to purchase Litecoin, enter the address copied in step 1.
+Copy the text below the QR code and paste it in your Litecoin wallet or on the website of the service you used to purchase Litecoin.  If you're using a mobile app, you may also be able to scan the QR code.  Litecoin ATMs also allow you to enter the destination address via a camera - you can hold the deposit QR code up and it should be recognized.
 
 **As noted** please don't reuse the generated address!  If you need to deposit money again, repeat step 2 to get a new deposit address.
 

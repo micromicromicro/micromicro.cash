@@ -136,7 +136,7 @@ for index, update in enumerate(reversed(sorted(os.listdir('updates')))):
         date = dateutil.parser.parse(sdate)
         body = markdown2.markdown(source.read(), extras=['tables'])
 
-    article_path = 'update_{}.html'.format(update[:-3])
+    article_path = 'updates/update_{}.html'.format(update[:-3])
 
     if len(recent) < 4:
         textbody = w3lib.html.remove_tags(body)
@@ -156,7 +156,7 @@ for index, update in enumerate(reversed(sorted(os.listdir('updates')))):
         body=body,
         path=article_path,
     )
-    with open('intermediate/updates/' + article_path, 'w') as out:
+    with open('intermediate/' + article_path, 'w') as out:
         out.write(render(
             'update_article.html',
             update=article,

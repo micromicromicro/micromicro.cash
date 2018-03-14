@@ -14,6 +14,10 @@ export const uon = x => {
 	return x == null
 }
 
+export const uonoe = x => {
+	return x == null || x.length === 0
+}
+
 export const baseCurrency = 'ltc'
 
 export const lct = (text) => document.createTextNode(text)

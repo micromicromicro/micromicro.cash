@@ -5,7 +5,6 @@ import {
 	format_decimal,
 	currencyInfo,
 	baseCurrency,
-	lct,
 	basePath,
 } from './_shared.js'
 import Big from 'big.js'
@@ -20,8 +19,10 @@ import Big from 'big.js'
 	const baseCurrencyInfo = currencyInfo.get(baseCurrency)
 	const format_base = value => [
 		...baseCurrencyInfo.sym(),
-		lct(format_decimal(value.div(Math.pow(10, baseCurrencyInfo.majorPlaces)))),
+		format_decimal(value.div(Math.pow(10, baseCurrencyInfo.majorPlaces))),
 	]
+
+	// Convert row (1)
 	{
 		let row = [lc.td('Convert')]
 		for (let currency of currencies) {
@@ -32,6 +33,8 @@ import Big from 'big.js'
 		}
 		rows.push(row)
 	}
+
+	// Rate rows (2+)
 	Object.keys(prices.prices).forEach(k => {
 		const row = [lc.td({
 			account: 'Account',
@@ -54,6 +57,7 @@ import Big from 'big.js'
 		}
 		rows.push(row)
 	})
+
 	const table = lc.table(
 		...rows.map(v => lc.tr(...v)),
 	)

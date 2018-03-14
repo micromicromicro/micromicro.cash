@@ -4,6 +4,7 @@ import qrscan from 'qrscan-es6'
 import moment from 'moment'
 import {
 	uon,
+	uonoe,
 	lct,
 	format_price,
 	mount,
@@ -254,7 +255,7 @@ let _label_unique = [0]
 
 const _inputBase = (makeInput) => {
 	return (args) => {
-		const {text, initialValue} = args
+		const {text, initialValue, help} = args
 		const unique = (_label_unique++).toString()
 		const out = {
 			value: initialValue,
@@ -266,13 +267,16 @@ const _inputBase = (makeInput) => {
 		const newArgs = Object.assign({}, {unique: unique, set: set}, args)
 		const input = makeInput(newArgs)
 		out.dom = [label, input]
+		if (!uon(help)) {
+			out.dom.push(lc.span({class: 'help'}, help))
+		}
 		return out
 	}
 }
 
 const _inputBaseOpt = (makeInput) => {
 	return (args) => {
-		const {text, initialValue, blankValue} = args
+		const {text, initialValue, blankValue, help} = args
 		const initialValue2 = uon(initialValue) ? null : initialValue
 		const unique = (_label_unique++).toString()
 		let value = (
@@ -309,6 +313,9 @@ const _inputBaseOpt = (makeInput) => {
 			out.value = value
 		}
 		out.dom = [label, input, remove]
+		if (!uon(help)) {
+			out.dom.push(lc.span({class: 'help'}, help))
+		}
 		return out
 	}
 }
@@ -488,8 +495,32 @@ const e_submits = (...elements) => {
 }
 
 const e_button = (id, text, callback) => {
+	let running = false
 	return {
-		dom: [lc.button({id: 'button_' + id, type: 'submit', onclick: () => safe(callback)}, lc.div(lc.span(text)))],
+		dom: [lc.button({
+			id: 'button_' + id,
+			type: 'submit',
+			onclick: () => {
+				if (running) return
+				running = true
+				try {
+					safe(callback)
+				} finally {
+					running = false
+				}
+			},
+		}, lc.div(lc.span(text)))],
+	}
+}
+
+const e_buttonDownload = (id, text, name, data) => {
+	return {
+		dom: [lc.a({
+			id: 'button_' + id,
+			class: 'button',
+			download: name,
+			href: URL.createObjectURL(new Blob([data])),
+		}, lc.div(lc.span(text)))],
 	}
 }
 
@@ -837,8 +868,15 @@ const finishLogin = async (username, account, next) => {
 
 
 route(/^login(?:\?next=(.*))?$/, (_, next) => {
-	let username = e_formText({text: 'User', initialValue: config.username, code: true, focus: true})
-	let password = e_formPass({text: 'Pass'})
+	let username = e_formText({
+		text: 'User',
+		initialValue: config.username, code: true, focus: true,
+		help: 'The username you used when creating an account',
+	})
+	let password = e_formPass({
+		text: 'Pass',
+		help: 'Your account password',
+	})
 	mountRoot(e_outer(
 		e_body(
 			e_logo(),
@@ -954,6 +992,7 @@ goRoute(/^go\/paste/, (_) => {
 	const address = e_formText({
 		text: 'Address',
 		focus: true,
+		help: 'A micromicro or Litecoin address',
 	})
 	return [
 		e_body(
@@ -974,34 +1013,34 @@ authRoute(/^in$/, (_) => {
 	let slow = e_formFlip({
 		text: 'Fast',
 		initialValue: false,
-		hint: 'Tally the transaction immediately. Fees are slightly higher.',
+		help: 'Tally the transaction immediately. Fees are slightly higher.',
 		offText: 'Fast',
 		onText: 'Slow',
 	})
 	let amount = e_formPriceOpt({
 		text: 'Amount',
 		initialValue: null,
-		hint: 'The sender must send exactly this amount in the transaction.',
+		help: 'The sender must send exactly this amount in the transaction.',
 	})
 	let receiver_message = e_formTextAreaOpt({
 		text: 'Personal memo',
 		initialValue: null,
-		hint: 'This message will only be shown to you.',
+		help: 'This message will only be shown to you.',
 	})
 	let sender_message = e_formTextAreaOpt({
 		text: 'Display message',
 		initialValue: null,
-		hint: 'This note is presented to the sender before paying.',
+		help: 'This note is presented to the sender before paying.',
 	})
 	let expire = e_formDurationOpt({
 		text: 'Expire',
 		initialValue: null,
-		hint: 'Prevent further payments after a time.',
+		help: 'Prevent further payments after a time.',
 	})
 	let once = e_bool({
 		text: 'One-time',
 		initialValue: false,
-		hint: 'Delete after one transaction',
+		help: 'Delete after one transaction',
 		blankValue: false,
 	})
 	mountRoot(e_authbody({back: true, elements: [
@@ -1071,13 +1110,18 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 					elements.push(e_price(inout.amount))
 					getAmount = () => inout.amount
 				}
-				const message = e_formTextArea({text: 'Personal message', initialValue: inout.sender_message})
+				const message = e_formTextArea({
+					text: 'Personal message',
+					initialValue: inout.sender_message,
+					hint: 'A note for your records',
+					help: 'A note for your records',
+				})
 				subform.push(message)
 				elements.push(e_subform(...subform))
 				elements.push(e_submits(
 					e_button('send', 'Send', async () => {
 						const amount = getAmount()
-						await myPost(basePath + 'send', {
+						const transaction = await myPost(basePath + 'send', {
 							tos: config.tos,
 							username: config.username,
 							token: config.token,
@@ -1087,7 +1131,7 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 						})
 						config.account.balance -= amount
 						setConfig({account: config.account})
-						go('success/sent', inout, getAmount())
+						go('success/sent', inout, getAmount(), transaction)
 					}),
 				))
 			}
@@ -1135,19 +1179,62 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 })
 
 
-authRoute(/^success\/sent$/, (_, inout, amount) => {
-	let elements = []
-	if (!uon(inout)) {
-		elements.push(e_price(amount))
-		elements.push(e_message(inout.receiver_message))
+const showSuccess = (blank, title, id, transaction) => {
+	const detailsMount = e_mount(e_text('Loading...'))
+	const buttonsMount = e_mount()
+	const set = transaction => {
+		let elements = []
+		elements.push(e_price(transaction.amount))
+		let message
+		if (!uon(transaction.receiver_message)) {
+			message = transaction.receiver_message
+		} else {
+			message = transaction.sender_message
+		}
+		elements.push(e_message(message))
+		detailsMount.dom[0].replaceWith(...toDom(...elements))
+		buttonsMount.dom[0].replaceWith(...toDom(e_submits(
+			e_buttonDownload(
+				'download',
+				'Download',
+				(
+					'micromicro - ' +
+					new Date(transaction.stamp).toLocaleDateString() +
+					' - ' +
+					message.replace(/[^ a-zA-Z0-9_=.-]/g, '_') +
+					'.json'
+				),
+				JSON.stringify(transaction)
+			)
+		)))
+	}
+	if (uon(transaction)) {
+		safe(async () => {
+			const transaction = await myPost(basePath + 'transaction', {
+				id: id,
+				tos: config.tos,
+				username: config.username,
+				token: config.token,
+			})
+			set(transaction)
+		})
+	} else {
+		atRefresh(() => set(transaction))
 	}
 	mountRoot(e_authbody({back: true, elements: [
 		e_body(
-			e_blankAddress('Sent'),
-			e_title('Send'),
-			...elements,
+			e_blankAddress(blank),
+			e_title(title),
+		),
+		e_foot(
+			buttonsMount,
 		),
 	]}))
+}
+
+
+authRoute(/^success\/sent\/(.+)$/, (_, id, transaction) => {
+	showSuccess('Sent', 'Send', id, transaction)
 })
 
 
@@ -1155,25 +1242,26 @@ authRoute(/^out$/, (_) => {
 	const amount = e_formPrice({
 		text: 'Amount',
 		initialValue: null,
-		hint: 'The sender must send exactly this amount in the transaction.',
+		help: 'The sender must send exactly this amount in the transaction.',
 	})
 	const receiver_message = e_formTextAreaOpt({
 		text: 'Display message',
 		initialValue: null,
-		hint: 'This note is presented to the receiver before accepting.',
+		help: 'This note is presented to the receiver before accepting.',
 	})
 	const sender_message = e_formTextAreaOpt({
 		text: 'Personal memo',
 		initialValue: null,
-		hint: 'This message will only be shown to you.',
+		help: 'This message will only be shown to you.',
 	})
 	const expire = e_formDurationOpt({
 		text: 'Expire',
 		initialValue: null,
-		hint: 'Prevent further payments after a time.',
+		help: 'Prevent further payments after a time.',
 	})
 	const password = e_formPassOpt({
 		text: 'Pass',
+		help: 'The receiver must enter this password to receive the money.',
 	})
 	mountRoot(e_authbody({back: true, elements: [
 		e_body(e_subform(
@@ -1228,16 +1316,19 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 				let slow = e_formFlip({
 					text: 'Fast',
 					initialValue: false,
-					hint: 'Tally the transaction immediately. Fees are slightly higher.',
+					help: 'Apply the amount to your balance immediately. Fees are slightly higher.',
 					offText: 'Fast',
 					onText: 'Slow',
 				})
 				const message = e_formTextArea({
 					text: 'Personal message',
 					initialValue: inout.receiver_message,
+					hint: 'A note for your records',
+					help: 'A note for your records',
 				})
 				const password = e_formPassOpt({
 					text: 'Pass',
+					help: 'If this out is password protected, enter the password here.',
 				})
 				elements.push(e_subform(
 					slow,
@@ -1248,7 +1339,7 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 				))
 				elements.push(e_submits(
 					e_button('receive', 'Accept', async () => {
-						await myPost(basePath + 'receive', {
+						const transaction = await myPost(basePath + 'receive', {
 							tos: config.tos,
 							username: config.username,
 							token: config.token,
@@ -1261,7 +1352,7 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 							config.account.balance += inout.amount
 							setConfig({account: config.account})
 						}
-						go('success/received', inout)
+						go('success/received/' + transaction.id, transaction)
 					}),
 				))
 			}
@@ -1310,19 +1401,8 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 })
 
 
-authRoute(/^success\/received$/, (_, inout) => {
-	let elements = []
-	if (!uon(inout)) {
-		elements.push(e_price(inout.amount))
-		elements.push(e_message(inout.sender_message))
-	}
-	mountRoot(e_authbody({back: true, elements: [
-		e_body(
-			e_blankAddress('Received'),
-			e_title('Receive'),
-			...elements,
-		),
-	]}))
+authRoute(/^success\/received\/(.+)$/, (_, id, transaction) => {
+	showSuccess('Received', 'Receive', id, transaction)
 })
 
 
@@ -1418,15 +1498,21 @@ listRoute(/^list\/ins$/, (_) => {
 			},
 			format: i => [
 				lc.span({class: 'col1'}, String(i.index) + '.'),
-				lc.span({class: 'col2'}, i.receiver_message),
-				lc.span({class: 'coldetails'}, 
+				lc.span({class: 'col2'}, 
+					...(
+						uon(i.amount) ? [] : toDom(e_price(i.amount))
+					),
+				),
+				lc.span({class: 'col3'},
+					uonoe(i.receiver_message) ?
+						lc.span({class: 'hint'}, 'No message') :
+						i.receiver_message,
+				),
+				lc.span({class: 'col-details'},
 					...(
 						uon(i.expire) ?
 							[] : 
-							[lc.span({class: 'expires'}, moment(i.expire).format('LLL'))]
-					),
-					...(
-						uon(i.amount) ? [] : toDom(e_price(i.amount))
+							[lc.span({class: 'expires'}, 'Expires ' + moment(i.expire).format('LLL'))]
 					),
 				),
 			],
@@ -1469,14 +1555,20 @@ listRoute(/^list\/outs$/, (_) => {
 			format: i => [
 				lc.span({class: 'col1'}, String(i.index) + '.'),
 				lc.span({class: 'col2'}, 
+					...toDom(e_price(i.amount)),
+				),
+				lc.span({class: 'col3'},
+					uonoe(i.sender_message) ?
+						lc.span({class: 'hint'}, 'No message') :
+						i.sender_message,
+				),
+				lc.span({class: 'col-details'},
 					...(
 						uon(i.expire) ?
 							[] : 
-							lc.span({class: 'expires'}, moment(i.expire).format('LLL'))
+							lc.span({class: 'expires'}, 'Expires ' + moment(i.expire).format('LLL'))
 					),
-					...toDom(e_price(i.amount)),
 				),
-				lc.span({class: 'col3'}, i.sender_message),
 			],
 			actions: (i, deleteRow) => [
 				e_button('open', 'Open', async () => {
@@ -1517,7 +1609,10 @@ listRoute(/^list\/scan$/, (_) => {
 				} else {
 					elements.push(lc.span({class: 'col2'}, '➡'))
 				}
-				elements.push(lc.span({class: 'col3'}, i.receiver_message))
+				let message = i.receiver_message
+				if (uon(message)) message = i.sender_message
+				if (uonoe(message)) message = lc.span({class: 'hint'}, 'No message')
+				elements.push(lc.span({class: 'col3'}, message))
 				return elements
 			},
 			actions: (i, _) => [
@@ -1544,7 +1639,7 @@ listRoute(/^list\/activity$/, (_) => {
 		}
 
 		page() {
-			return myPost(this.path, {
+			return myPost(basePath + this.path, {
 				tos: config.tos,
 				username: config.username,
 				token: config.token,
@@ -1555,9 +1650,9 @@ listRoute(/^list\/activity$/, (_) => {
 		}
 	}
 	const pagers = [
-		new Pager('/app/v1/transactions', 't'),
-		new Pager('/app/v1/deposits', 'd'),
-		new Pager('/app/v1/withdrawals', 'w'),
+		new Pager('transactions', 't'),
+		new Pager('deposits', 'd'),
+		new Pager('withdrawals', 'w'),
 	]
 	const mount = e_mount()
 	safe(async () => {
@@ -1677,13 +1772,15 @@ authRoute(/^settings$/, (_) => {
 	const webhook = e_formTextOpt({
 		text: 'Webhook',
 		initialValue: config.account.webhook,
-		hint: 'Send transactions to this URL via HTTP POST.',
+		help: 'Send transactions to this URL via HTTP POST.',
 	})
 	const password = e_formPass({
 		text: 'New Pass',
+		help: 'Change the password for your account. You must also confirm the new password. Leave empty to keep your current password.',
 	})
 	const passwordConfirm = e_formPass({
 		text: 'Confirm Pass',
+		help: 'If you\'re changing your password, enter it again here.',
 	})
 	const submits = []
 	if (!uon(config.account.webhook))
@@ -1751,7 +1848,12 @@ authRoute(/^settings$/, (_) => {
 
 authRoute(/^$/, (_) => {
 	mountRoot(e_authbody({back: false, elements: [
-		e_body(),
+		e_body(
+			{dom: [lc.div({class: 'artframe'}, lc.img({
+				alt: 'Fine art',
+				src: '/app/smallart' + (Math.floor(Math.random() * 3) + 1) + '.svg',
+			}))]}
+		),
 		e_foot(
 			e_pages(
 				e_button('scan', 'Scan', async () => go('go/scan')),

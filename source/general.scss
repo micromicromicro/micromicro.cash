@@ -40,6 +40,10 @@ code {
 	div.subtitle img {
 		margin-top: 1em;
 	}
+
+	div.help_toc {
+		display: block;
+	}
 }
 
 // Desktopish
@@ -333,14 +337,10 @@ div.apibody {
 	margin: 2em 0;
 }
 
-.help-toc {
-	h2 {
-		display: inline-block;
-	}
-
-	& > li > ul > li::before {
-		content: '◦';
-	}
+.help_toc {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-auto-flow: row;
 }
 
 .help_article {

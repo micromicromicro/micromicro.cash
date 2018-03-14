@@ -21,7 +21,7 @@ Before we start you'll need to prepare several things:
 
 1. An email account for sending download links. You can probably try this with a personal email account, but if you expect lots of purchases daily you may wish to set up Amazon SES or something similar.
 
-1. A [_development_ micromicro](https://micromicro.cash) account with a small balance to cover account maintenance and address creation.
+1. A [micromicro](https://micromicro.cash) account with a small balance to cover account maintenance and address creation.
 
     On `micromicro.cash` you can test purchases with testnet Litecoin instead of real money.  To switch to the production (real Litecoin) micromicro server, make an account on [the production server](https://micromicro.cash) and remove `` from all micromicro URLs in the code.
 

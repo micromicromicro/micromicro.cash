@@ -674,11 +674,12 @@ div.body > a {
 	align-items: flex-end;
 	flex-grow: 1;
 	justify-content: center;
-	padding: 1em;
 
 	img {
 		width: 100%;
-		max-height: 15vh;
+		max-height: 19vh;
+		padding: 1em;
+		box-sizing: border-box;
 	}
 }
 

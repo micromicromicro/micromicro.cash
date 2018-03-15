@@ -192,7 +192,7 @@ const e_authbody = ({back, tabs, elements}) => {
 						toDom(e_button('back', 'Close', async () => go(''))) :
 						[lc.div()]
 					),
-					lc.img({alt: 'micromicro', src: 'icon.svg', id: 'icon'}),
+					lc.a({target: '_blank', href: '/'}, lc.img({alt: 'micromicro', src: 'icon.svg', id: 'icon'})),
 				),
 				lc.div({class: 'subheader'},
 					lc.span(config.username),

@@ -905,7 +905,7 @@ route(/^login(?:\?next=(.*))?$/, (_, next) => {
 					let newpath = 'login/confirm'
 					if (!uon(next)) newpath = newpath + '?next=' + next
 					if (uon(username.value) || username.value.length == 0 || uon(password.value) || password.value.length == 0) {
-						throw new Error('ASSERT')
+						throw new Error('You must enter a new username and password')
 					}
 					go(newpath, username.value, password.value)
 				}),
@@ -1457,7 +1457,7 @@ authRoute(/^deposit$/, (_) => {
 		e_body(
 			subbody,
 			e_title('Deposit'),
-			e_text('Send the bitcoins you wish to deposit to the above address within 24h. Leave and return to this page to get a new address.'),
+			e_text('Send the litecoin you wish to deposit to the above address within 24h. Leave and return to this page to get a new address.'),
 		),
 	]}))
 })

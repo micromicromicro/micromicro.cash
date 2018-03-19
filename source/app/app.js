@@ -871,11 +871,11 @@ route(/^login(?:\?next=(.*))?$/, (_, next) => {
 	let username = e_formText({
 		text: 'User',
 		initialValue: config.username, code: true, focus: true,
-		help: 'The username you used when creating an account',
+		help: 'The username you used when creating an account, or a new username if you\'re creating an account',
 	})
 	let password = e_formPass({
 		text: 'Pass',
-		help: 'Your account password',
+		help: 'Your account password, or a new password if you\'re creating an account',
 	})
 	mountRoot(e_outer(
 		e_body(
@@ -1137,10 +1137,22 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 			}
 		} else {
 			elements.push(e_title('Receive'))
+			elements.push({dom: [lc.p('Use ', lc.strong('Scan'), ' to send money to this address.')]})
 			if (!uon(inout.amount)) {
 				elements.push(e_price(inout.amount))
 			}
 			elements.push(e_message(inout.sender_message))
+			elements.push(e_submits(
+				e_button('delete', 'Delete', async () => {
+					await myPost(basePath + 'delete_in', {
+						tos: config.tos,
+						username: config.username,
+						token: config.token,
+						id: id,
+					})
+					go('')
+				}),
+			))
 		}
 		mountReadyTagged({tags: ['details'], mount: detailsMount.dom[0], elements: elements})
 	}
@@ -1166,7 +1178,7 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 		mountRoot(e_noauthbody(
 			path,
 			[address, detailsMount],
-			[detailsMount],
+			[],
 		))
 	} else {
 		mountRoot(e_authbody({back: true, elements: [
@@ -1358,8 +1370,20 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 			}
 		} else {
 			elements.push(e_title('Offer'))
+			elements.push({dom: [lc.p('Use ', lc.strong('Scan'), ' to receive this offer.')]})
 			elements.push(e_price(inout.amount))
 			elements.push(e_message(inout.sender_message))
+			elements.push(e_submits(
+				e_button('delete', 'Delete', async () => {
+					await myPost(basePath + 'delete_out', {
+						tos: config.tos,
+						username: config.username,
+						token: config.token,
+						id: id,
+					})
+					go('')
+				}),
+			))
 		}
 		mountReadyTagged({
 			tags: ['details'],
@@ -1389,6 +1413,7 @@ authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
 		mountRoot(e_noauthbody(
 			path,
 			[address, detailsMount],
+			[],
 		))
 	} else {
 		mountRoot(e_authbody({back: true, elements: [

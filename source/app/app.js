@@ -1084,7 +1084,7 @@ authRoute(/^in$/, (_) => {
 
 
 route(/^in\/(............)$/, (path, id, preppedInOut) => {
-	const addressUrl = qualifyPath('/app/v1/#in/' + id)
+	const addressUrl = qualifyPath('/app/#in/' + id)
 	const address = e_address(addressUrl, 'micro')
 	const detailsMount = e_mount(e_text('Loading...'))
 	const set = inout => {
@@ -1304,7 +1304,7 @@ authRoute(/^out$/, (_) => {
 
 
 authRoute(/^out\/(............)$/, (path, id, preppedInOut) => {
-	const addressUrl = qualifyPath('/app/v1/#out/' + id)
+	const addressUrl = qualifyPath('/app/#out/' + id)
 	const address = e_address(addressUrl, 'micro')
 	const detailsMount = e_mount(e_text('Loading...'))
 	const set = inout => {

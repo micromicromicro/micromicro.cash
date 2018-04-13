@@ -12,6 +12,8 @@ Enter the username and password you'd like to use, and press `New Account`.  Ent
 
 ![Home screen](getting_started_home.jpg)
 
+Note: Your account is currently empty, and the only things you can do are deposit money and receive Outs (offered money) from others, and will be closed automatically after a week if the balance remains zero. Read the following steps to learn how to deposit money into your account.
+
 ## 2. Generate a deposit address
 
 Click on `Deposit` to open the deposit tool.

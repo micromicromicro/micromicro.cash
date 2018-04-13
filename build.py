@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import subprocess
+import itertools
 import shutil
 import os
 import os.path
@@ -208,6 +209,32 @@ with open('intermediate/tos.html', 'w') as out:
 with open('intermediate/app/_tos.js', 'w') as out:
     out.write('export const currentTos = \'{}\'\n'.format(
         sha256(tosdata).hexdigest()))
+
+# Package qr logo for svg embedding
+'''
+svg = xml.etree.ElementTree.parse('source_extra/qr_micro.svg')
+remove_ns = lambda e: re.sub('^{.*}(.*)$', '\\1', e)  # noqa
+for e in svg.iter():
+    e.tag = remove_ns(e.tag)
+    newattrs = {}
+    for k, v in e.items():
+        newattrs[remove_ns(k)] = v
+    e.attrib = newattrs
+with open('intermediate/app/qr_micro.js', 'w') as out:
+    out.write('export const qrMicro = {};'.format(
+        json.dumps(''.join(
+            xml.etree.ElementTree.tostring(e, encoding='unicode', method='xml')
+            for e in svg.getroot()
+        ))
+    ))
+'''
+with open('source_extra/qr_micro.svg', 'r') as source:
+    # skip <xml>
+    svgdata = ''.join(itertools.islice(source.readlines(), 1, None))
+with open('intermediate/app/qr_micro.js', 'w') as out:
+    out.write('export const qrMicro = {};'.format(
+        json.dumps(svgdata)
+    ))
 
 # Package js and perform automatic additions
 subprocess.check_call(['npm', 'run-script', 'build'])

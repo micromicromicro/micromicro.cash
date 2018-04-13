@@ -25,6 +25,7 @@ import {
 	baseCurrency,
 	basePath,
 } from '../_shared.js'
+import { qrMicro } from './qr_micro.js'
 import { currentTos } from './_tos.js'
 
 if (self !== top)
@@ -90,16 +91,16 @@ const mountRoot = (...element) => {
 }
 
 const routes = []
-let cleanup = new Map
+let cleanup = []
 
 const go = (path, ...extraArgs) => {
 	incAsyncGeneration()
 	try {
-		cleanup.forEach((c, _) => c())
+		cleanup.forEach(c => c())
 	} catch (e) {
 		mountError(e)
 	}
-	cleanup.clear()
+	cleanup.length = 0
 	for (let i = 0; i < routes.length; ++i) {
 		let route = routes[i]
 		let match = path.match(route[0])
@@ -231,7 +232,7 @@ const e_noauthbody = (path, body, foot) => {
 				dom: [
 					lc.a(
 						{class: 'noauth_login', href: 'login?next=' + path},
-						'Log in or create an account',
+						'Log in or create an account!',
 					),
 				],
 			},
@@ -556,7 +557,6 @@ const e_address = (address, type) => {
 	let qr = new qrcode(0, 'H')
 	qr.addData(address)
 	qr.make()
-	let base = lc.div({class: 'address'})
 	const low = {
 		micro: [119 / 255 * 360, 92 / 255 * 100, 114 / 255 * 100],
 		//base: [35 / 255 * 360, 211 / 255 * 100, 106 / 255 * 100],
@@ -566,7 +566,13 @@ const e_address = (address, type) => {
 		micro: [152 / 255 * 360, 79 / 255 * 100, 70 / 255 * 100],
 		base: [206 / 255 * 360, 120 / 255 * 100, 8 / 255 * 100],
 	}[type]
-	base.innerHTML = qr.createSvgTag({
+	const obstruction = {
+		width: 0.25,
+		height: 0.25,
+	}
+	if (type == 'micro') obstruction.svgData = qrMicro
+	else if (type == 'base') obstruction.path = 'qr_' + baseCurrency + '.svg'
+	const svg_data = qr.createSvgTag({
 		margin: 0,
 		cellColor: (c, r) => {
 			const modcount = qr.getModuleCount()
@@ -577,18 +583,15 @@ const e_address = (address, type) => {
 				(low[2] + (high[2] - low[2]) * interp).toString() + '%'+
 			')'
 		},
-		obstruction: {
-			path: {
-				micro: 'qr_micro.svg',
-				base: 'qr_' + baseCurrency + '.svg',
-			}[type],
-			width: 0.25,
-			height: 0.25,
-		},
+		obstruction: obstruction,
 	})
 	const text = lc.input({type: 'text', value: address, readonly: ''})
 	const copy = lc.input({type: 'submit'}, 'Copy')
-	base.appendChild(lc.div(text, copy))
+	let base = lc.div({class: 'address'},
+		lc.a({target: '_blank', href: address},
+			lc.img({src: 'data:image/svg+xml;utf-8,' + svg_data, alt:'Scan to pay with micromicro!'})),
+		lc.div(text, copy),
+	)
 	copy.onclick = () => {
 		text.select()
 		document.execCommand('copy')
@@ -638,7 +641,7 @@ const e_scan = cb => {
 				throw new Error('No cameras found.')
 			throw e
 		}
-		cleanup.set(base, () => {
+		cleanup.push(() => {
 			qrscan.stop(key)
 		})
 	})
@@ -1142,17 +1145,6 @@ route(/^in\/(............)$/, (path, id, preppedInOut) => {
 				elements.push(e_price(inout.amount))
 			}
 			elements.push(e_message(inout.sender_message))
-			elements.push(e_submits(
-				e_button('delete', 'Delete', async () => {
-					await myPost(basePath + 'delete_in', {
-						tos: config.tos,
-						username: config.username,
-						token: config.token,
-						id: id,
-					})
-					go('')
-				}),
-			))
 		}
 		mountReadyTagged({tags: ['details'], mount: detailsMount.dom[0], elements: elements})
 	}

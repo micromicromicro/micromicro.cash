@@ -88,7 +88,10 @@ for article in os.listdir('help'):
     slug = re.search('(.*)\.md', article).groups()
     with open('help/' + article, 'r') as source:
         header = source.readline()
-        body = markdown2.markdown(source.read(), extras=['tables'])
+        body = markdown2.markdown(
+            source.read().replace('{bust}', bust),
+            extras=['tables']
+        )
 
     title, = re.search('<!-- (.*) -->', header).groups()
     article_path = '{}.html'.format(article[:-3])

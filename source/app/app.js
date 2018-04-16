@@ -228,14 +228,11 @@ const e_noauthbody = (path, body, foot) => {
 		),
 		e_foot(
 			...foot,
-			{
-				dom: [
-					lc.a(
-						{class: 'noauth_login', href: 'login?next=' + path},
-						'Log in or create an account!',
-					),
-				],
-			},
+			e_button('noauth_login', 'Log in or create an account!', async() => {
+				let loginpath = 'login'
+				if (path.length > 0) loginpath = loginpath + '?next=' + path
+				go(loginpath)
+			}),
 		),
 	)
 }
@@ -823,7 +820,7 @@ const forceRefreshAccount = async () => {
 
 
 if (!uon(config.token)) {
-	refreshAccountInterval = setInterval(refreshAccount, 5000)
+	refreshAccountInterval = setInterval(refreshAccount, 5 * 60 * 1000)
 }
 
 
@@ -857,7 +854,7 @@ route(/^tos(?:\?next=(.*))?$/, (_, next) => {
 
 const finishLogin = async (username, account, next) => {
 	lastRefresh = new Date().getTime()
-	refreshAccountInterval = setInterval(refreshAccount, 5000)
+	refreshAccountInterval = setInterval(refreshAccount, 5 * 60 * 1000)
 	setConfig({
 		username: username,
 		token: account.token,
@@ -1209,7 +1206,7 @@ const showSuccess = (blank, title, id, transaction) => {
 					'.json'
 				),
 				JSON.stringify(transaction)
-			)
+			),
 		)))
 	}
 	if (uon(transaction)) {
